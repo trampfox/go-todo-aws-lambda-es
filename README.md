@@ -157,7 +157,7 @@ So you need to creates the parameter before running the deploy command. See [her
 
 #### Go Lambda functions
 
-**Requirements**
+**Requirements:**
 You need to compile the Lambda function, please see [Building] section. 
 
 Run the following command from *go/src/go-todo-app* directory to package the Lambda function, upload it to S3, deploy them and expose the endopints through an API Gateway:
@@ -174,7 +174,7 @@ $ serverless deploy --stage dev
 
 #### Log forwarder
 
-**Requirements**
+**Requirements:**
 This function need valid subnet, security group and Elasticsearch endpoint as parameters. You have to use the same values which has been returned as output by Terraform, after the provisioning of the Elastisearch domain. See [Elasticsearch cluster].
 
 Run the following command from *nodejs/log-forwarder* directory to package the Lambda function, upload it to S3 and deploy it. 

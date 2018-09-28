@@ -12,7 +12,7 @@ Deploying this solution sets up the below resources:
     * Save a new task (POST /task)
     * Basic authentication (/auth)
 * A Lambda function to forward the logs to the Elasticsearch instance
-* Elasticsearch cluster (1 node)
+* AWS Elasticsearch domain (1 node)
 * An Internet gateway
 * A VPC, a subnet and a security group for the Elasticsearch instance and the log forwarder
 

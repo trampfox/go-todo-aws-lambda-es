@@ -1,0 +1,17 @@
+{
+  "name": "log-forwarder",
+  "version": "1.0.0",
+  "description": "A simple lof forwarder lambda function",
+  "main": "handler.js",
+  "dependencies": {
+    "aws-sdk": "^2.322.0",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Davide Monfrecola",
+  "license": "MIT"
+}

@@ -1,0 +1,34 @@
+service: lambda-log-forwarder
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  region: eu-west-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    REGION: ${opt:region, 'eu-west-1'}
+    ENDPOINT: ${opt:endpoint}
+    INDEX: ${opt:index, 'lambda-logs'}
+    DOC_TYPE: ${opt:docType, 'log'}
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+    - es:ESHttpPost
+    - es:ESHttpPut
+    Resource: "arn:aws:es:${opt:region, self:provider.region}:${ssm:accountId}:domain/*"
+  vpc:
+    securityGroupIds:
+      - ${opt:securityGroup, 'sg-0333617a6d59f6a28'}
+    subnetIds:
+      - ${opt:subnet, 'subnet-0804050db62f7fcf7'} 
+
+functions:
+  postToES:
+    handler: handler.handler
+    events:
+      - cloudwatchLog: '/aws/lambda/go-todo-app-${opt:stage, self:provider.stage}-auth'
+      - cloudwatchLog: '/aws/lambda/go-todo-app-${opt:stage, self:provider.stage}-get'
+      - cloudwatchLog: '/aws/lambda/go-todo-app-${opt:stage, self:provider.stage}-post'
+      - cloudwatchLog: '/aws/lambda/go-todo-app-${opt:stage, self:provider.stage}-list'
+
+    

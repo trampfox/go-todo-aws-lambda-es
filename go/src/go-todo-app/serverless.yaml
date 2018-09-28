@@ -1,0 +1,84 @@
+service: go-todo-app
+
+provider:
+  name: aws
+  runtime: go1.x
+  stage: ${opt:stage, 'dev'}
+  region: eu-west-1
+  environment:
+    BASIC_AUTH_USERNAME: ${ssm:basicAuthUsername}
+    BASIC_AUTH_PASSWORD: ${ssm:basicAuthPassword}
+    TABLE_NAME: task-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+    - dynamodb:DescribeTable
+    - dynamodb:Query
+    - dynamodb:Scan
+    - dynamodb:GetItem
+    - dynamodb:PutItem
+    - dynamodb:UpdateItem
+    - dynamodb:DeleteItem
+    Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:${ssm:accountId}:table/*"
+  - Effect: Allow
+    Action:
+    - es:ESHttpPost
+    - es:ESHttpPut
+    Resource: "arn:aws:es:${opt:region, self:provider.region}:${ssm:accountId}:domain/*"
+
+package:
+  exclude:
+  - ./**
+  include:
+  - ./bin/**
+
+functions:
+  list:
+    handler: bin/list
+    events:
+    - http:
+        path: task
+        method: get
+  get:
+    handler: bin/get
+    events:
+    - http:
+        path: task/{id}
+        method: get
+        request:
+          parameters:
+            paths:
+              id: true
+  post:
+    handler: bin/post
+    events:
+    - http:
+        path: task
+        method: post
+        authorizer:
+          name: auth
+          resultTtlInSeconds: 0
+          identitySource: method.request.header.Authorization
+  auth:
+    handler: bin/auth
+    events:
+      - http:
+          path: auth
+          method: get
+
+resources:
+  Resources:
+    GoCrudDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: 'task-${opt:stage, self:provider.stage}'

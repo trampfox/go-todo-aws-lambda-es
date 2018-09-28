@@ -10,3 +10,18 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+.idea
+.DS_STORE
+.Python
+
+# Serverless framework
+.serverless
+
+# Terraform 
+.terraform
+terraform.*
+
+
+go/src/bin
+nodejs/log-forwarder/node-modules

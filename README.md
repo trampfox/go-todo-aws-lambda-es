@@ -1,4 +1,4 @@
-# todo-lambda-app
+# go-todo-aws-lambda-es
 
 ## Architecture
 

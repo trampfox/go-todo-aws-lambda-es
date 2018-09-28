@@ -36,12 +36,12 @@ resource "aws_security_group" "es_web" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  vpc_id="${aws_vpc.default.id}"
+  vpc_id = "${aws_vpc.elasticsearch.id}"
 
   tags {
     Name = "elasticsearch-web-sg"
   }
-  vpc_id = "${aws_vpc.elasticsearch.id}"
+  
 }
 
 resource "aws_iam_service_linked_role" "es" {

@@ -4,11 +4,6 @@ variable "name" {
   type        = "string"
 }
 
-# variable "env" {
-#   type        = "string"
-#   description = "Description of the logical environment."
-# }
-
 variable "instance_type" {
   default     = "t2.micro.elasticsearch"
   description = "Elastic Search Service cluster Ec2 instance type."
@@ -19,18 +14,6 @@ variable "instance_number" {
   default     = 1
   description = "Elastic Search Service cluster Ec2 instance number."
   type        = "string"
-}
-
-variable "vpc_id" {
-  default     = "elasticsearch-vpc"
-  description = "Vpc id of the cluster."
-  type        = "string"
-}
-
-variable "subnet_ids" {
-  default = ["elasticsearch-subnet"]
-  description = "List of VPC Subnet IDs for the Elastic Search Service EndPoints will be created."
-  type = "list"
 }
 
 variable "dedicated_master" {
@@ -68,21 +51,9 @@ variable "elasticsearch_version" {
   type        = "string"
 }
 
-variable "ingress_cidr_allowed" {
-  default     = ["194.230.191.177/32"]
-  description = "Ingress CIDR blocks allowed."
-  type        = "list"
-}
-
 variable "encryption_enabled" {
   default     = "false"
   description = "Enable encription in Elastic Search. Free tier doesn't support encryption at rest."
-  type        = "string"
-}
-
-variable "zone_awareness" {
-  default     = false
-  description = "Indicates whether zone awareness is enabled."
   type        = "string"
 }
 
@@ -99,7 +70,6 @@ variable "zone" {
 }
 
 variable "account_id" {
-  default     = "545533392491"
   description = "AWS account id."
   type        = "string"
 }
@@ -110,6 +80,6 @@ variable "vpc_cidr" {
 }
 
 variable "subnet_cidr" {
-  description = "CIDR for the public subnet"
+  description = "CIDR for the private subnet"
   default = "10.0.1.0/24"
 }

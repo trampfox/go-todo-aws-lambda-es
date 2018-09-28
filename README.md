@@ -20,7 +20,7 @@ Deploying this solution sets up the below resources:
 
 Below is a brief explanation of what you can find inside the project:
 
-```bash
+```
 .
 ├── go                              <-- Go source files
 │   ├── src
@@ -52,7 +52,7 @@ Below is a brief explanation of what you can find inside the project:
 ## Requirements
 
 * AWS CLI already configured with at least PowerUser permission
-* [Docker installed](https://www.docker.com/community-edition) (if you want to the Lmabda functions locally with aws sam)
+* [Docker installed](https://www.docker.com/community-edition) (if you want to test the Lambda functions locally with aws sam)
 * [Golang](https://golang.org)
 * [Python 3](https://www.python.org/downloads/)
 * [pip](https://pypi.org/project/pip/)
@@ -62,7 +62,7 @@ Below is a brief explanation of what you can find inside the project:
 
 ## Setup process
 
-These instructions will get you a copy ready to be deployed. See deployment for notes on how to deploy the project on AWS.
+These instructions will get you a copy of the solution ready to be deployed. See deployment for notes on how to deploy the project on AWS.
 
 ### Installing dependencies
 
@@ -70,18 +70,18 @@ These instructions will get you a copy ready to be deployed. See deployment for 
 First of all, you need to specify the location of your workspace. To do that run the following command (from the project root): 
 
 ```shell
-export GOPATH=$GOPATH:`pwd`/go
+$ export GOPATH=$GOPATH:`pwd`/go
 ```
 
-Then, run the following script (from the project root) to install all the dependecies:
+Then, run the commands below (from the project root) to install all the dependecies:
 
 ```shell
-cd go/
-go get ./...
+$ cd go/
+$ go get ./...
 ```
 #### Log forwarder
 
-Run the following script (from the project root) to install all the dependecies:
+Run the following commands (from the project root) to install all the dependecies:
 
 ```shell
 cd nodejs/log-forwarder
@@ -94,29 +94,29 @@ npm install
 In order to run and/or deploy the lambda functions, you have to build the executeable targets.
 Preparing a binary to deploy to AWS Lambda requires that it is compiled for Linux.
 
-Go in the go-todo-app directory
+Go in the *go/src/go-todo-app* directory
 
 ```shell
-cd go/src/go-todo-app
+$ cd go/src/go-todo-app
 ```
 
 and issue the following command in a shell to build it:
 
 ```shell
-make build
+$ make build
 ```
 **NOTE**: The previous command builds the Lambda functions for a Linux environment (specifing `GOOS` and `GOARCH` environment variables). If you need to run it locally on macOS, you can use the following command:
 
 ```shell
-make build-local
+$ make build-local
 ```
 
 ### Local development
 
 ```shell
-virtualenv -p python3 .
-source bin/activate
-pip3 install -r requirements.txt
+$ virtualenv -p python3 .
+$ source bin/activate
+$ pip3 install -r requirements.txt
 ```
 
 #### Invoking function locally through Serverless framework (go-todo-app)
@@ -128,19 +128,20 @@ $ serverless invoke -f list -l
 
 ### Elasticsearch cluster 
 
-The terraform/elasticsearch directory contains a Terraform module for provisioning an AWS Elasticsearch domain. 
-Using this module you can create an Elasticsearch domain and join it to a VPC with the access policy based on a security groups applied to Elasticsearch domain.
+The *terraform/elasticsearch* directory contains a Terraform module to provision an AWS Elasticsearch domain. 
+Using this module you can create an Elasticsearch domain and join it to a VPC with the access policy based on a security group applied to Elasticsearch domain.
 
 To provision a new domain run the following commands (from the root of the project):
 
 ```shell
-cd terraform/elasticsearch
-terraform apply
+$ cd terraform/elasticsearch
+$ terraform apply
 ```
 
 and enter the value for the logical enviroment where you want to deploy the domain (e.g. dev). 
+
 This command will populate also all the output values defined in the output.tf file. 
-This value are needed in the next step of the deployment process. For instance, you will need the VPC ID and the Subnet ID newly created to deploy the log forwarder lambda function. 
+This value are needed in the next step of the deployment process. For instance, you will need the security group ID and the subnet ID newly created to deploy the log forwarder lambda function. 
 
 ### Lambda function packaging and deployment
 
@@ -158,16 +159,16 @@ So you need to creates the parameter before running the deploy command. See [her
 **Requirements**
 You need to compile the Lambda function, please see [Building] section. 
 
-Run the following command from go/src/go-todo-app directory to package the Lambda function, upload it to S3, deploy them and expose the endopints through an API Gateway:
+Run the following command from *go/src/go-todo-app* directory to package the Lambda function, upload it to S3, deploy them and expose the endopints through an API Gateway:
 
 ```shell
-serverless deploy
+$ serverless deploy
 ```
 
 You can also specify the logical environment where to deploy the functions, using the --stage parameter. If not specified, "dev" value is used as a default one. 
 
 ```shell
-serverless deploy --stage dev
+$ serverless deploy --stage dev
 ```
 
 #### Log forwarder
@@ -175,10 +176,10 @@ serverless deploy --stage dev
 **Requirements**
 This function need valid subnet, security group and Elasticsearch endpoint as parameters. You have to use the same values which has been returned as output by Terraform, after the provisioning of the Elastisearch domain. See [Elasticsearch cluster].
 
-Run the following command from nodejs/log-forwarder directory to package the Lambda function, upload it to S3 and deploy it. 
+Run the following command from *nodejs/log-forwarder* directory to package the Lambda function, upload it to S3 and deploy it. 
 
 ```shell
-serverless deploy --endpoint `terraform output -state=./../../terraform/elasticsearch/terraform.tfstate es_endpoint` --securityGroup `terraform output -state=./../../terraform/elasticsearch/terraform.tfstate security_group` --subnet `terraform output -state=./../../terraform/elasticsearch/terraform.tfstate subnet_id` --stage dev
+$ serverless deploy --endpoint `terraform output -state=./../../terraform/elasticsearch/terraform.tfstate es_endpoint` --securityGroup `terraform output -state=./../../terraform/elasticsearch/terraform.tfstate security_group` --subnet `terraform output -state=./../../terraform/elasticsearch/terraform.tfstate subnet_id` --stage dev
 ```
 
 ## License

@@ -1,12 +1,8 @@
-.PHONY: deps clean build
-
-deps:
-	go get -u ./...
-
 clean: 
 	rm -rf ./bin/get
 	rm -rf ./bin/list
 	rm -rf ./bin/post
+	rm -rf ./bin/auth
 
 build-local:
 	GOOS=darwin go build -o bin/get ./functions/get.go

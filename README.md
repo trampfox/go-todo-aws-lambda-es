@@ -27,7 +27,7 @@ Below is a brief explanation of what you can find inside the project:
 │       ├── go-todo-app             <-- A simple task management app in Go
 │           ├── Makefile            <-- Make to automate build
 │           ├── functions           <-- Source code for a lambda functions
-│           │   ├── auth.go         <-- Basic authentication Lambda function code
+│           │   ├── auth.go         <-- Basic authentication Lambda function code (API Gateway Custom Authorizer)
 │           │   ├── get.go          <-- Get task by ID Lambda function code
 │           │   ├── list.go         <-- List all tasks Lambda function code
 │           │   └── post.go         <-- Create new task Lambda function code

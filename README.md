@@ -84,8 +84,8 @@ $ go get ./...
 Run the following commands (from the project root) to install all the dependecies:
 
 ```shell
-cd nodejs/log-forwarder
-npm install
+$ cd nodejs/log-forwarder
+$ npm install
 ```
 
 ### Building
@@ -141,7 +141,8 @@ $ terraform apply
 and enter the value for the logical enviroment where you want to deploy the domain (e.g. dev). 
 
 This command will populate also all the output values defined in the output.tf file. 
-This value are needed in the next step of the deployment process. For instance, you will need the security group ID and the subnet ID newly created to deploy the log forwarder lambda function. 
+
+This value are needed in the next steps of the deployment process. For instance, you will need the security group ID and the subnet ID newly created to deploy the log forwarder lambda function. 
 
 ### Lambda function packaging and deployment
 

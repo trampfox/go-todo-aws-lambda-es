@@ -4,21 +4,21 @@
 
 ![Architecture](aws-architecture.jpeg)
 
-Deploying this solution sets up the below resources:
-* An API gateway to expose four lambda functions
+Deploying this solution sets up:
+* An API gateway to expose four Lambda functions
 * Four Lambda functions which implement the following functionalities:
     * Retrieve a task by ID (GET /task/{id})
     * Retrieve all tasks (GET /task)
     * Save a new task (POST /task)
     * Basic authentication (/auth)
-* A Lambda function to forward the logs to the Elasticsearch instance
+* A Lambda function to forward the logs to an AWS Elasticsearch domain
 * AWS Elasticsearch domain (1 node)
 * An Internet gateway
 * A VPC, a subnet and a security group for the Elasticsearch instance and the log forwarder
 
 ## Under the hood 
 
-Below is a brief explanation of what you can find inside the project:
+Below there is a brief explanation of what you can find inside the project:
 
 ```
 .
@@ -52,7 +52,6 @@ Below is a brief explanation of what you can find inside the project:
 ## Requirements
 
 * AWS CLI already configured with at least PowerUser permission
-* [Docker installed](https://www.docker.com/community-edition) (if you want to test the Lambda functions locally with aws sam)
 * [Golang](https://golang.org)
 * [Python 3](https://www.python.org/downloads/)
 * [pip](https://pypi.org/project/pip/)
@@ -67,7 +66,7 @@ These instructions will get you a copy of the solution ready to be deployed. See
 ### Installing dependencies
 
 #### Todo Go app
-First of all, you need to specify the location of your workspace. To do that run the following command (from the project root): 
+First of all, you need to specify the location of your workspace. Run the following command to do it (from the project root): 
 
 ```shell
 $ export GOPATH=$GOPATH:`pwd`/go
@@ -100,7 +99,7 @@ Go in the *go/src/go-todo-app* directory
 $ cd go/src/go-todo-app
 ```
 
-and issue the following command in a shell to build it:
+and then issue the following command in a shell to build it:
 
 ```shell
 $ make build
@@ -131,42 +130,41 @@ $ serverless invoke -f list -l
 The *terraform/elasticsearch* directory contains a Terraform module to provision an AWS Elasticsearch domain. 
 Using this module you can create an Elasticsearch domain and join it to a VPC with the access policy based on a security group applied to Elasticsearch domain.
 
-To provision a new domain run the following commands (from the root of the project):
+To provision a new domain go to the *terraform/elasticsearch* directory and run the following commands (from the root of the project):
 
 ```shell
-$ cd terraform/elasticsearch
 $ terraform apply
 ```
 
-and enter the value for the logical enviroment where you want to deploy the domain (e.g. dev). 
+then enter the value for the logical enviroment where you want to deploy the domain (e.g. dev) and the AWS account ID where you want to deploy it. 
 
-This command will populate also all the output values defined in the output.tf file. 
+This command will also populate all the output values defined in the output.tf file. 
 
-This value are needed in the next steps of the deployment process. For instance, you will need the security group ID and the subnet ID newly created to deploy the log forwarder lambda function. 
+These values are needed in the next steps of the deployment process. For instance, you will need the security group ID and the subnet ID newly created to deploy the log forwarder lambda function. 
 
 ### Lambda function packaging and deployment
 
-You can use Serverless framework to deploy all the lambda functions.
+You can use Serverless framework to deploy all the Lambda functions.
 
 Serveless use SSM parameters as the source for the parameters below:
 * Basic authentication username (basicAuthUsername)
 * Basic authentication password (basicAuthPassword)
 * AWS account ID (accountId)
 
-So you need to creates the parameter before running the deploy command. See [here](https://docs.aws.amazon.com/cli/latest/reference/ssm/put-parameter.html) for more information. 
+So, you need to create the parameter before running the deploy command. See [here](https://docs.aws.amazon.com/cli/latest/reference/ssm/put-parameter.html) for more information. 
 
 #### Go Lambda functions
 
 **Requirements:**
-You need to compile the Lambda function, please see [Building] section. 
+You need to compile the Lambda function, see [Building] section. 
 
-Run the following command from *go/src/go-todo-app* directory to package the Lambda function, upload it to S3, deploy them and expose the endopints through an API Gateway:
+To package the Lambda functions, run the following command from *go/src/go-todo-app* directory which upload the package to S3, deploy them and expose the endopints through an API Gateway:
 
 ```shell
 $ serverless deploy
 ```
 
-You can also specify the logical environment where to deploy the functions, using the --stage parameter. If not specified, "dev" value is used as a default one. 
+You can also specify the logical environment where you plan to deploy the functions by using the --stage parameter. If not specified, "dev" value is used as default. 
 
 ```shell
 $ serverless deploy --stage dev
@@ -175,7 +173,7 @@ $ serverless deploy --stage dev
 #### Log forwarder
 
 **Requirements:**
-This function need valid subnet, security group and Elasticsearch endpoint as parameters. You have to use the same values which has been returned as output by Terraform, after the provisioning of the Elastisearch domain. See [Elasticsearch cluster].
+This function needs valid subnet, security group and Elasticsearch endpoint as parameters. You have to use the same values that have been returned as output by Terraform, after the provisioning of the Elastisearch domain. See [Elasticsearch cluster].
 
 Run the following command from *nodejs/log-forwarder* directory to package the Lambda function, upload it to S3 and deploy it. 
 
